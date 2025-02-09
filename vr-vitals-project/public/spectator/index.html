@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectator View</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Spectator View</h1>
+    <div>
+        <h2>Heart Rate: <span id="heartRate">--</span> bpm</h2>
+        <h2>Stress Level: <span id="stress">--</span>/10</h2>
+    </div>
+
+    <script>
+        const socket = io();
+        const heartRateElement = document.getElementById('heartRate');
+        const stressElement = document.getElementById('stress');
+
+        socket.on('updateVitals', (data) => {
+            heartRateElement.textContent = data.heartRate;
+            stressElement.textContent = data.stress;
+        });
+    </script>
+</body>
+</html>
