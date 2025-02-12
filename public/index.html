@@ -1,79 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor's Interface</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .control { margin-bottom: 15px; }
-        label { display: inline-block; width: 150px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor's Interface</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .control { margin-bottom: 15px; }
+    label { display: inline-block; width: 200px; }
+  </style>
 </head>
 <body>
-    <h1>Doctor's Interface</h1>
-    <div class="control">
-        <label for="heartRate">Heart Rate:</label>
-        <input type="number" id="heartRate" min="0" max="200" value="70">
-    </div>
-    <div class="control">
-        <label for="stress">Stress Level:</label>
-        <input type="range" id="stress" min="0" max="10" value="5">
-        <span id="stressValue">5</span>
-    </div>
-    <div class="control">
-        <label for="gsr">GSR:</label>
-        <input type="number" id="gsr" min="0" max="100" value="50">
-    </div>
-    <div class="control">
-        <label for="respiratoryRate">Respiratory Rate:</label>
-        <input type="number" id="respiratoryRate" min="0" max="60" value="15">
-    </div>
-    <div class="control">
-        <label for="volume">Volume:</label>
-        <input type="range" id="volume" min="0" max="100" value="50">
-        <span id="volumeValue">50</span>
-    </div>
-    <div class="control">
-        <label for="brightness">Brightness:</label>
-        <input type="range" id="brightness" min="0" max="100" value="50">
-        <span id="brightnessValue">50</span>
-    </div>
-    <button onclick="updateValues()">Update Values</button>
+  <h1>Doctor's Interface</h1>
+  
+  <div class="control">
+    <label for="heartRate">Heart Rate (bpm):</label>
+    <!-- Set a range roughly within human possibilities (can be unhealthy) -->
+    <input type="number" id="heartRate" min="30" max="250" value="70">
+  </div>
 
-    <script>
-        const socket = io();
-        const stressInput = document.getElementById('stress');
-        const stressValue = document.getElementById('stressValue');
-        const volumeInput = document.getElementById('volume');
-        const volumeValue = document.getElementById('volumeValue');
-        const brightnessInput = document.getElementById('brightness');
-        const brightnessValue = document.getElementById('brightnessValue');
+  <div class="control">
+    <label for="gsr">GSR (µS):</label>
+    <input type="number" id="gsr" min="0" max="100" value="50">
+  </div>
 
-        stressInput.oninput = () => {
-            stressValue.textContent = stressInput.value;
-        };
+  <div class="control">
+    <label for="respiratoryRate">Respiratory Rate (breaths/min):</label>
+    <!-- Using a minimum of 5 breaths per minute -->
+    <input type="number" id="respiratoryRate" min="5" max="60" value="15">
+  </div>
 
-        volumeInput.oninput = () => {
-            volumeValue.textContent = volumeInput.value;
-        };
+  <div class="control">
+    <label for="volume">Volume (%):</label>
+    <input type="range" id="volume" min="0" max="100" value="50">
+    <span id="volumeValue">50</span>
+  </div>
 
-        brightnessInput.oninput = () => {
-            brightnessValue.textContent = brightnessInput.value;
-        };
+  <div class="control">
+    <label for="brightness">Brightness (%):</label>
+    <input type="range" id="brightness" min="0" max="100" value="50">
+    <span id="brightnessValue">50</span>
+  </div>
 
-        function updateValues() {
-            const data = {
-                heartRate: document.getElementById('heartRate').value,
-                stress: stressInput.value,
-                gsr: document.getElementById('gsr').value,
-                respiratoryRate: document.getElementById('respiratoryRate').value,
-                volume: volumeInput.value,
-                brightness: brightnessInput.value
-            };
-            socket.emit('updateValues', data);
-        }
-    </script>
+  <button onclick="updateValues()">Update Values</button>
+
+  <script>
+    const socket = io();
+    const volumeInput = document.getElementById('volume');
+    const volumeValue = document.getElementById('volumeValue');
+    const brightnessInput = document.getElementById('brightness');
+    const brightnessValue = document.getElementById('brightnessValue');
+
+    volumeInput.oninput = () => {
+      volumeValue.textContent = volumeInput.value;
+    };
+
+    brightnessInput.oninput = () => {
+      brightnessValue.textContent = brightnessInput.value;
+    };
+
+    function updateValues() {
+      const data = {
+        heartRate: document.getElementById('heartRate').value,
+        gsr: document.getElementById('gsr').value,
+        respiratoryRate: document.getElementById('respiratoryRate').value,
+        volume: volumeInput.value,
+        brightness: brightnessInput.value
+      };
+      socket.emit('updateValues', data);
+    }
+  </script>
 </body>
 </html>
