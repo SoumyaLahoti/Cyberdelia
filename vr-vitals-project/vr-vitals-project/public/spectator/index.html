@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectator View</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-size: 36px;
+        }
+        .vital-sign {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .vital-sign i {
+            font-size: 36px;
+            margin-right: 20px;
+            color: #3498db;
+        }
+        .vital-sign span {
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 80px;
+        }
+        .progress-bar {
+            flex-grow: 1;
+            height: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: 20px;
+        }
+        .progress {
+            height: 100%;
+            background-color: #2ecc71;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vital Signs</h1>
+        <div class="vital-sign">
+            <i class="fas fa-heartbeat"></i>
+            <span id="heartRate">--</span> bpm
+            <div class="progress-bar">
+                <div id="heartRateProgress" class="progress"></div>
+            </div>
+        </div>
+        <div class="vital-sign">
+            <i class="fas fa-tint"></i>
+            <span id="gsr">--</span> μS
+            <div class="progress-bar">
+                <div id="gsrProgress" class="progress"></div>
+            </div>
+        </div>
+        <div class="vital-sign">
+            <i class="fas fa-lungs"></i>
+            <span id="respiratoryRate">--</span> breaths/min
+            <div class="progress-bar">
+                <div id="respiratoryRateProgress" class="progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const elements = {
+            heartRate: document.getElementById('heartRate'),
+            gsr: document.getElementById('gsr'),
+            respiratoryRate: document.getElementById('respiratoryRate')
+        };
+        const progressBars = {
+            heartRate: document.getElementById('heartRateProgress'),
+            gsr: document.getElementById('gsrProgress'),
+            respiratoryRate: document.getElementById('respiratoryRateProgress')
+        };
+
+        socket.on('updateValues', (data) => {
+            for (const [key, value] of Object.entries(data)) {
+                if (elements[key]) {
+                    elements[key].textContent = value;
+                    updateProgressBar(key, value);
+                }
+            }
+        });
+
+        function updateProgressBar(key, value) {
+            const maxValues = {
+                heartRate: 200,
+                gsr: 100,
+                respiratoryRate: 30
+            };
+            const percentage = (value / maxValues[key]) * 100;
+            progressBars[key].style.width = `${percentage}%`;
+        }
+    </script>
+</body>
+</html>
