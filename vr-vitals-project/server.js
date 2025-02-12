@@ -8,8 +8,8 @@ app.use(express.static('public'));
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  socket.on('updateVitals', (data) => {
-    io.emit('updateVitals', data);
+  socket.on('updateValues', (data) => {
+    io.emit('updateValues', data);
   });
 });
 
