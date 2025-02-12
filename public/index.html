@@ -9,6 +9,7 @@
     body { font-family: Arial, sans-serif; padding: 20px; }
     .control { margin-bottom: 15px; }
     label { display: inline-block; width: 200px; }
+    .normal-range { margin-left: 10px; color: #555; font-size: 0.9em; }
   </style>
 </head>
 <body>
@@ -18,29 +19,34 @@
     <label for="heartRate">Heart Rate (bpm):</label>
     <!-- Set a range roughly within human possibilities (can be unhealthy) -->
     <input type="number" id="heartRate" min="30" max="250" value="70">
+    <small class="normal-range">(Normal: 60–100 bpm)</small>
   </div>
 
   <div class="control">
     <label for="gsr">GSR (µS):</label>
     <input type="number" id="gsr" min="0" max="100" value="50">
+    <small class="normal-range">(Normal: ~1–20 µS at rest)</small>
   </div>
 
   <div class="control">
     <label for="respiratoryRate">Respiratory Rate (breaths/min):</label>
     <!-- Using a minimum of 5 breaths per minute -->
     <input type="number" id="respiratoryRate" min="5" max="60" value="15">
+    <small class="normal-range">(Normal: 12–20 breaths/min)</small>
   </div>
 
   <div class="control">
     <label for="volume">Volume (%):</label>
     <input type="range" id="volume" min="0" max="100" value="50">
     <span id="volumeValue">50</span>
+    <small class="normal-range">(Range: 0–100%)</small>
   </div>
 
   <div class="control">
     <label for="brightness">Brightness (%):</label>
     <input type="range" id="brightness" min="0" max="100" value="50">
     <span id="brightnessValue">50</span>
+    <small class="normal-range">(Range: 0–100%)</small>
   </div>
 
   <button onclick="updateValues()">Update Values</button>
