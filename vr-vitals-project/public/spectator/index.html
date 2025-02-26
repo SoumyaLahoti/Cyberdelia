@@ -8,14 +8,23 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000; /* Dark background */
-            color: #fff; /* White text */
+            background-color: #000;
+            color: #fff;
             margin: 0;
             padding: 0;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* Left Section: Waveforms */
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+        }
+
         .waveforms {
             flex: 3;
             padding: 20px;
@@ -30,7 +39,7 @@
         .wave canvas {
             width: 100%;
             height: 100%;
-            background-color: #111; /* Darker background for waveforms */
+            background-color: #111;
             border-radius: 5px;
         }
 
@@ -42,10 +51,9 @@
             font-weight: bold;
         }
 
-        /* Right Section: Numerical Values */
         .parameters {
             flex: 1;
-            background-color: #111; /* Sidebar background */
+            background-color: #111;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -59,7 +67,7 @@
 
         .parameter h2 {
             font-size: 24px;
-            color: #00ffff; /* Cyan for labels */
+            color: #00ffff;
         }
 
         .value {
@@ -69,64 +77,66 @@
 
         .unit {
             font-size: 24px;
-            color: #888; /* Light gray for units */
+            color: #888;
         }
     </style>
 </head>
 <body>
-    <!-- Left Section -->
-    <div class="waveforms">
-        
-        <!-- Heart Rate Wave -->
-        <div class="wave" id="heartRateWave">
-            <canvas></canvas>
-            <span class="wave-label" style="color:#00ff00;">Heart Rate</span>
-        </div>
-
-        <!-- Blood Pressure Wave -->
-        <div class="wave" id="respiratoryRateWave">
-            <canvas></canvas>
-            <span class="wave-label" style="color:#ffcc00;">Respiratory Rate</span>
-        </div>
-
-        <!-- GSR Wave -->
-        <div class="wave" id="gsrWave">
-            <canvas></canvas>
-            <span class="wave-label" style="color:#00ffff;">GSR</span>
-        </div>
-
-    </div>
-
-    <!-- Right Section -->
-    <div class="parameters">
-        
-        <!-- Heart Rate -->
-        <div class="parameter">
-            <h2>Heart Rate</h2>
-            <div class="value">
-                <span id="heartRate">--</span> 
-                <span class="unit">bpm</span>
+    <div class="container">
+        <!-- Left Section -->
+        <div class="waveforms">
+            
+            <!-- Heart Rate Wave -->
+            <div class="wave" id="heartRateWave">
+                <canvas></canvas>
+                <span class="wave-label" style="color:#00ff00;">Heart Rate</span>
             </div>
-        </div>
 
-        <!-- Blood Pressure -->
-        <div class="parameter">
-            <h2>Respiratory Rate</h2>
-            <div class="value">
-                <span id="respiratoryRate">--</span> 
-                <span class="unit">mmHg</span>
+            <!-- Respiratory Rate Wave -->
+            <div class="wave" id="respiratoryRateWave">
+                <canvas></canvas>
+                <span class="wave-label" style="color:#ffcc00;">Respiratory Rate</span>
             </div>
-        </div>
 
-        <!-- GSR -->
-        <div class="parameter">
-            <h2>GSR</h2>
-            <div class="value">
-                <span id="gsr">--</span> 
-                <span class="unit">μS</span>
+            <!-- GSR Wave -->
+            <div class="wave" id="gsrWave">
+                <canvas></canvas>
+                <span class="wave-label" style="color:#00ffff;">GSR</span>
             </div>
+
         </div>
 
+        <!-- Right Section -->
+        <div class="parameters">
+            
+            <!-- Heart Rate -->
+            <div class="parameter">
+                <h2>Heart Rate</h2>
+                <div class="value">
+                    <span id="heartRate">--</span> 
+                    <span class="unit">bpm</span>
+                </div>
+            </div>
+
+            <!-- Respiratory Rate -->
+            <div class="parameter">
+                <h2>Respiratory Rate</h2>
+                <div class="value">
+                    <span id="respiratoryRate">--</span> 
+                    <span class="unit">bpm</span>
+                </div>
+            </div>
+
+            <!-- GSR -->
+            <div class="parameter">
+                <h2>GSR</h2>
+                <div class="value">
+                    <span id="gsr">--</span> 
+                    <span class="unit">μS</span>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <!-- JavaScript for Dynamic Updates -->
@@ -147,6 +157,7 @@
           canvas.height = canvas.offsetHeight;
 
           let t = 0;
+          let speed = 0.05;
 
           function draw() {
               ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -156,7 +167,7 @@
               for (let x = 0; x <= canvas.width; x++) {
                   const y =
                       canvas.height / 2 +
-                      Math.sin((x + t) * 0.05) * (canvas.height / 4);
+                      Math.sin((x + t) * speed) * (canvas.height / 4);
                   x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
               }
 
@@ -167,22 +178,32 @@
           }
 
           draw();
+
+          return (newSpeed) => {
+              speed = newSpeed;
+          };
       }
 
-      createWave("heartRateWave", "#00ff00");
-      createWave("respiratoryRateWave", "#ffcc00");
-      createWave("gsrWave", "#00ffff");
+      const updateHeartRateSpeed = createWave("heartRateWave", "#00ff00");
+      const updateRespiratoryRateSpeed = createWave("respiratoryRateWave", "#ffcc00");
+      const updateGsrSpeed = createWave("gsrWave", "#00ffff");
 
-      // Update numerical values dynamically
+      // Update numerical values and waveform speeds dynamically
       socket.on("updateValues", (data) => {
-          if (data.heartRate)
+          if (data.heartRate) {
               elements.heartRate.textContent = data.heartRate;
+              updateHeartRateSpeed(data.heartRate / 1000);
+          }
 
-          if (data.respiratoryRate)
+          if (data.respiratoryRate) {
               elements.respiratoryRate.textContent = data.respiratoryRate;
+              updateRespiratoryRateSpeed(data.respiratoryRate / 300);
+          }
 
-          if (data.gsr)
+          if (data.gsr) {
               elements.gsr.textContent = data.gsr;
+              updateGsrSpeed(data.gsr / 1000);
+          }
       });
     </script>
 </body>
