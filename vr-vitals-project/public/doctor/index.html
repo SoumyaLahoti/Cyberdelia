@@ -25,40 +25,15 @@
         <label for="respiratoryRate">Respiratory Rate:</label>
         <input type="number" id="respiratoryRate" min="0" max="60" value="15">
     </div>
-    <div class="control">
-        <label for="volume">Volume:</label>
-        <input type="range" id="volume" min="0" max="100" value="50">
-        <span id="volumeValue">50</span>
-    </div>
-    <div class="control">
-        <label for="brightness">Brightness:</label>
-        <input type="range" id="brightness" min="0" max="100" value="50">
-        <span id="brightnessValue">50</span>
-    </div>
     <button onclick="updateValues()">Update Values</button>
 
     <script>
         const socket = io();
-        const volumeInput = document.getElementById('volume');
-        const volumeValue = document.getElementById('volumeValue');
-        const brightnessInput = document.getElementById('brightness');
-        const brightnessValue = document.getElementById('brightnessValue');
-
-        volumeInput.oninput = () => {
-            volumeValue.textContent = volumeInput.value;
-        };
-
-        brightnessInput.oninput = () => {
-            brightnessValue.textContent = brightnessInput.value;
-        };
-
         function updateValues() {
             const data = {
                 heartRate: document.getElementById('heartRate').value,
                 gsr: document.getElementById('gsr').value,
                 respiratoryRate: document.getElementById('respiratoryRate').value,
-                volume: volumeInput.value,
-                brightness: brightnessInput.value
             };
             socket.emit('updateValues', data);
         }

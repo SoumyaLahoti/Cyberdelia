@@ -84,9 +84,9 @@
         </div>
 
         <!-- Blood Pressure Wave -->
-        <div class="wave" id="bloodPressureWave">
+        <div class="wave" id="respiratoryRateWave">
             <canvas></canvas>
-            <span class="wave-label" style="color:#ffcc00;">Blood Pressure</span>
+            <span class="wave-label" style="color:#ffcc00;">Respiratory Rate</span>
         </div>
 
         <!-- GSR Wave -->
@@ -111,9 +111,9 @@
 
         <!-- Blood Pressure -->
         <div class="parameter">
-            <h2>Blood Pressure</h2>
+            <h2>Respiratory Rate</h2>
             <div class="value">
-                <span id="bloodPressure">--</span> 
+                <span id="respiratoryRate">--</span> 
                 <span class="unit">mmHg</span>
             </div>
         </div>
@@ -135,7 +135,7 @@
 
       const elements = {
           heartRate: document.getElementById('heartRate'),
-          bloodPressure: document.getElementById('bloodPressure'),
+          respiratoryRate: document.getElementById('respiratoryRate'),
           gsr: document.getElementById('gsr')
       };
 
@@ -170,7 +170,7 @@
       }
 
       createWave("heartRateWave", "#00ff00");
-      createWave("bloodPressureWave", "#ffcc00");
+      createWave("respiratoryRateWave", "#ffcc00");
       createWave("gsrWave", "#00ffff");
 
       // Update numerical values dynamically
@@ -178,8 +178,8 @@
           if (data.heartRate)
               elements.heartRate.textContent = data.heartRate;
 
-          if (data.bloodPressure)
-              elements.bloodPressure.textContent = data.bloodPressure;
+          if (data.respiratoryRate)
+              elements.respiratoryRate.textContent = data.respiratoryRate;
 
           if (data.gsr)
               elements.gsr.textContent = data.gsr;
